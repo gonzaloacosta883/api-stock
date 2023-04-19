@@ -1,0 +1,800 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: API-STOCK
+            description: Api Rest Full para gestionar el stock de productos en sus respectivos almacenes.
+            version: 1.0.0
+        paths:
+            /api/1.0/categoria/all:
+                get:
+                    description: Devuelve todas las categorias de productos.
+                    tags:
+                        - Categorias
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    id: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: Bebidas }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/categoria/add:
+                post:
+                    description: Crea una categoria inexistente.
+                    tags:
+                        - Categorias
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigo: {type: integer, example: 4554}
+                                        nombre: {type: string, example: bebidas}
+                    responses:
+                        201:
+                            description: Created
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Created }
+                                            data: { type: integer, example: 201 }
+                        302:
+                            description: Found
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Found }
+                                            data: { type: integer, example: 302 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/categoria/edit:
+                put:
+                    tags:
+                        - Categorias
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigo: {type: string, example: nuevoNombre}
+                                        nombre: {type: integer, example: 4554}
+                    responses:
+                        200:
+                            description: Edited
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Edited }
+                                            data: { type: integer, example: 200 }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+                        
+            /api/1.0/categoria/{codigo}:
+                get:
+                    tags:
+                        - Categorias
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data: 
+                                                type: object
+                                                properties:
+                                                    id: { type: integer, example: 1 }
+                                                    codigo: { type: integer, example: 4554 }
+                                                    nombre: { type: string, example: Bebidas }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 1
+                        description: Codigo de categoria a solicitar
+            /api/1.0/categoria/{codigo}/delete:
+                delete:
+                    tags:
+                        - Categorias
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data: 
+                                                type: object
+                                                properties:
+                                                    id: { type: integer, example: 1 }
+                                                    codigo: { type: integer, example: 4554 }
+                                                    nombre: { type: string, example: Bebidas }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 1
+                        description: Codigo de la categoria que quiere eliminar
+            /api/1.0/categoria/{codigo}/productos:
+                get:
+                    tags:
+                        - Categorias
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    id: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: Bebidas }
+                                                    productos:
+                                                        type: object
+                                                        properties:
+                                                            id: { type: integer, example: 1 }
+                                                            nombre: { type: string, example: Picadillo de carne 90g }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: false }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 1
+                        description: Codigo de la categoria de la cual se quieren obtener los productos
+            /api/1.0/producto/add:
+                post:
+                    description: Crea un producto y lo asocia a una categoria
+                    tags: 
+                        - Productos
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigo: {type: integer, example: 3322}
+                                        nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
+                                        codigoColor: {type: string, example: 005BAA}
+                                        precio: {type: float, example: 50}
+                                        codigoCategoria: {type: integer, example: 4554}
+                    responses:
+                        201:
+                            description: Created
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Created }
+                                            data: { type: integer, example: 201 }
+                        302:
+                            description: Found
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Found }
+                                            data: { type: integer, example: 302 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/producto/edit:
+                put:
+                    tags:
+                        - Productos
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigo: {type: integer, example: 3322}
+                                        nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
+                                        codigoColor: {type: string, example: 005BAA}
+                                        precio: {type: float, example: 50}
+                                        codigoCategoria: {type: integer, example: 4554}
+                    responses:
+                        200:
+                            description: Edited
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Edited }
+                                            data: { type: integer, example: 200 }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: false }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/producto/all:
+                get:
+                    description: Devuelve la lista de productos
+                    tags:
+                        - Productos
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    id: {type: integer, example: 1}
+                                                    codigo: {type: integer, example: 3255}
+                                                    nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
+                                                    codigoColor: {type: string, example: 005BAA}
+                                                    precio: {type: float, example: 50}
+                                                    categoria: 
+                                                        type: object
+                                                        properties:
+                                                            id: {type: integer, example: 1}
+                                                            nombre: {type: string, example: bebidas}
+                                                            foto: {type: string, example: null}
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/producto/{codigo}:
+                get:
+                    tags:
+                        - Productos
+                    description: Devuelve el producto cuyo código sea el recibido por parámetro.
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 1
+                        description: Codigo del producto que se quiere obtener
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    id: {type: integer, example: 1}
+                                                    codigo: {type: integer, example: 3255}
+                                                    nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
+                                                    codigoColor: {type: string, example: 005BAA}
+                                                    precio: {type: float, example: 50}
+                                                    categoria: 
+                                                        type: object
+                                                        properties:
+                                                            id: {type: integer, example: 1}
+                                                            nombre: {type: string, example: bebidas}
+                                                            foto: {type: string, example: null}
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: false }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/deposito/add:
+                post:
+                    description: Crea un deposito inexistente.
+                    tags:
+                        - Depositos
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigo: {type: integer, example: 4554}
+                                        nombre: {type: string, example: B1}
+                                        direccion: {type: string, example: Calle falsa 123}
+                    responses:
+                        201:
+                            description: Created
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Created }
+                                            data: { type: integer, example: 201 }
+                        302:
+                            description: Found
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Found }
+                                            data: { type: integer, example: 302 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/deposito/edit:
+                put:
+                    tags:
+                        - Depositos
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigo: {type: integer, example: 4554}
+                                        nombre: {type: string, example: nuevoNombre}
+                                        direccion: {type: string, example: calle falsa 123}
+                    responses:
+                        200:
+                            description: Edited
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Edited }
+                                            data: { type: integer, example: 200 }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/deposito/all:
+                get:
+                    description: Devuelve la lista de depositos existentes.
+                    tags:
+                        - Depositos
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: {type: boolean, example: true}
+                                            message: {type: string, example: "OK"}
+                                            data:
+                                                type: object
+                                                properties:
+                                                    codigo: {type: integer, example: 4554}
+                                                    nombre: {type: string, example: nuevoNombre}
+                                                    direccion: {type: string, example: calle falsa 123}
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/deposito/{codigo}:
+                get:
+                    tags:
+                        - Depositos
+                    description: Devuelve el deposito que contiene el codigo ingresado.
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 1
+                        description: Codigo del deposito que se quiere obtener.
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    codigo: {type: integer, example: 4554}
+                                                    nombre: {type: string, example: nuevoNombre}
+                                                    direccion: {type: string, example: calle falsa 123}
+            /api/1.0/deposito/{codigo}/productos:
+                get:
+                    description: Devuelve la lista de productos existentes en el deposito.
+                    tags:
+                        - Depositos
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 4554
+                        description: Codigo de deposito.
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            deposito:
+                                                type: object
+                                                properties:
+                                                    id: {type: integer, example: 23}
+                                                    codigo: {type: integer, example: 4554}
+                                                    nombre: {type: string, example: nuevoNombre}
+                                                    direccion: {type: string, example: calle falsa 123}
+                                                    productos:
+                                                        type: object
+                                                        properties:
+                                                            id: {type: integer, example: 1}
+                                                            codigo: {type: integer, example: 3255}
+                                                            nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
+                                                            codigoColor: {type: string, example: 005BAA}
+                                                            precio: {type: float, example: 50}
+                                                            categoria: 
+                                                                type: object
+                                                                properties:
+                                                                    id: {type: integer, example: 1}
+                                                                    nombre: {type: string, example: bebidas}
+                                                                    foto: {type: string, example: null}          
+            /api/1.0/deposito/{codigo}/delete:
+                delete:
+                    tags:
+                        - Depositos
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 4554
+                        description: Codigo del deposito que quiere eliminar
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: Deleted }
+                                            data: { type: integer, example: 200 }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+                                    
+            /api/1.0/stock/deposito/incrementar:
+                post:
+                    description: Crea un deposito inexistente.
+                    tags:
+                        - StockDeposito
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigoProducto: {type: integer, example: 3322}
+                                        codigoDeposito: {type: integer, example: 4554}
+                                        cantidad: {type: integer, example: 10}
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data: { type: integer, example: 200 }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }
+            /api/1.0/stock/deposito/decrementar:
+                put:
+                    description: Decrementa la cantida de unidades disponibles de un producto en un deposito.
+                    tags:
+                        - StockDeposito
+                    requestBody:
+                        content:
+                            aplication/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        codigoProducto: {type: integer, example: 3322}
+                                        codigoDeposito: {type: integer, example: 4554}
+                                        cantidad: {type: integer, example: 10} 
+                    responses:
+                        200:
+                            description: OK
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: true }
+                                            message: { type: string, example: OK }
+                                            data: { type: integer, example: 200 }
+                        404:
+                            description: Not Found
+                            content:
+                                aplication/json:
+                                        schema:
+                                            type: object
+                                            properties:
+                                                success: { type: boolean, example: true }
+                                                message: { type: string, example: Not Found }
+                                                data: { type: integer, example: 404 }
+                        500:
+                            description: Internal server error
+                            content:
+                                aplication/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success: { type: boolean, example: false }
+                                            message: { type: string, example: Internal server error }
+                                            data: { type: integer, example: 500 }  
+        tags:
+            - name: Categorias
+              description: Categorias a las cuales puede pertenecer un producto.
+            - name: Productos
+              description: Productos disponibles en los diferentes depositos.
+            - name: Depositos
+              description: Ubicaciones donde se alojan los diferentes productos.
+            - name: StockDeposito
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

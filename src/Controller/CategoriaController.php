@@ -36,7 +36,7 @@ class CategoriaController extends AbstractController
             $nombreCategoria = strtoupper(trim($data['nombre'])); //Mayuscula sin espacios
 
             $duplicado = $this->categoriaRepository
-                ->findOneBy(['nombre' => $nombreCategoria, 'codigo' => $data['codigo']]);
+                ->findOneBy(['codigo' => $data['codigo']]);
 
             if ($duplicado != null) {
                 return new JsonResponse([
@@ -163,12 +163,7 @@ class CategoriaController extends AbstractController
         return new JsonResponse([
             'success' => true,
             'message' => "OK",
-            "data" => [
-                "id" => $categoria->getId(),
-                "codigo" => $categoria->getCodigo(),
-                "nombre" => $categoria->getNombre(),
-                "productos" => $arregloProductos
-            ]
+            "data" => $arregloProductos
         ]);
     }
 
@@ -234,7 +229,7 @@ class CategoriaController extends AbstractController
                 return new JsonResponse([
                     'success' => false,
                     'message' => "Existen productos asociados a la categoria",
-                    'data' => 500,
+                    'data' => 423,
                 ]);
             }
 

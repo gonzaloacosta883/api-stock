@@ -89,8 +89,8 @@ nelmio_api_doc:
                                 schema:
                                     type: object
                                     properties:
-                                        codigo: {type: string, example: nuevoNombre}
-                                        nombre: {type: integer, example: 4554}
+                                        codigo: {type: string, example: 4554}
+                                        nombre: {type: integer, example: ADAPTADORES-WIFI}
                     responses:
                         200:
                             description: Edited
@@ -141,7 +141,7 @@ nelmio_api_doc:
                                                 type: object
                                                 properties:
                                                     id: { type: integer, example: 1 }
-                                                    codigo: { type: integer, example: 4554 }
+                                                    codigo: { type: integer, example: 2 }
                                                     nombre: { type: string, example: Bebidas }
                         404:
                             description: Not Found
@@ -184,13 +184,8 @@ nelmio_api_doc:
                                         type: object
                                         properties:
                                             success: { type: boolean, example: true }
-                                            message: { type: string, example: OK }
-                                            data: 
-                                                type: object
-                                                properties:
-                                                    id: { type: integer, example: 1 }
-                                                    codigo: { type: integer, example: 4554 }
-                                                    nombre: { type: string, example: Bebidas }
+                                            message: { type: string, example: Deleted }
+                                            data: { type: integer, example: 200 }
                         404:
                             description: Not Found
                             content:
@@ -236,13 +231,12 @@ nelmio_api_doc:
                                             data:
                                                 type: object
                                                 properties:
-                                                    id: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: Bebidas }
-                                                    productos:
-                                                        type: object
-                                                        properties:
-                                                            id: { type: integer, example: 1 }
-                                                            nombre: { type: string, example: Picadillo de carne 90g }
+                                                    codigo: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: RYZEN-3-3200G }
+                                                    codigoColor: { type: string, example: "#FFFF" }
+                                                    precio: { type: integer, example: 66150 }
+                                                    marca: { type: string, example: AMD }
+                                                    directorio: { type: string, example: directorio }
                         404:
                             description: Not Found
                             content:

@@ -152,11 +152,7 @@ class Producto
             "codigoColor" => $this->getCodigoColor(),
             "precio" => $this->getPrecio(),
             "marca" => $this->getMarca(),
-            "directorio" => $this->getDirectorio(),
-            "categoria" => [
-                "codigo" => $this->getCategoria()->getCodigo(),
-                "nombre" => $this->getCategoria()->getNombre()
-            ],
+            "directorio" => $this->getDirectorio()
         ];
     }
 

@@ -80,11 +80,7 @@ class CategoriaController extends AbstractController
             if (!empty($categorias)) {
 
                 for ($i = 0; $i < count($categorias); $i++) {
-                    $unaCategoria = [
-                        'id' => $categorias[$i]->getId(),
-                        'nombre' => $categorias[$i]->getNombre(),
-                    ];
-                    array_push($arregloCategorias, $unaCategoria);
+                    array_push($arregloCategorias, $categorias[$i]->__toArray());
                 }
             }
 

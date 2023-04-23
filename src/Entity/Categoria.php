@@ -79,7 +79,6 @@ class Categoria
     public function __toArray()
     {
         return [
-            "id" => $this->getId(),
             "codigo" => $this->getCodigo(),
             "nombre" => $this->getNombre()
         ];

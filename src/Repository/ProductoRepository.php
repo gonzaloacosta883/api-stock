@@ -19,6 +19,13 @@ class ProductoRepository extends ServiceEntityRepository
         parent::__construct($registry, Producto::class);
     }
 
+    public function getLastCodigo()
+    {
+        $query = $this->createQueryBuilder('producto')
+        ->select('MAX(producto.codigo)');
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
     // /**
     //  * @return Producto[] Returns an array of Producto objects
     //  */

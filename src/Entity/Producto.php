@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Categoria;
 use App\Entity\StockDeposito;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -28,11 +29,12 @@ class Producto
     private $nombre;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $codigoColor;
 
     /**
+     * USD
      * @ORM\Column(type="float")
      */
     private $precio;
@@ -49,17 +51,28 @@ class Producto
     private $stocks;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable = true)
-     */
-    private $foto;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $codigo;
 
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $marca;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $directorio;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ArchivoAdjunto::class, mappedBy="producto", orphanRemoval=true)
+     */
+    private $archivosAdjuntos;
+
     public function __construct() {
         $this->stocks = new ArrayCollection();
+        $this->archivosAdjuntos = new ArrayCollection();
     }
 
     public function addStock(StockDeposito $stock) {
@@ -119,17 +132,6 @@ class Producto
         return $this;
     }
 
-    public function getFoto()
-    {
-        return $this->foto;
-    }
-
-    public function setFoto($foto)
-    {
-        $this->foto = $foto;
-        return $this;
-    }
-
     public function getCodigo(): ?int
     {
         return $this->codigo;
@@ -145,17 +147,70 @@ class Producto
     public function __toArray()
     {
         return [
-            "id" => $this->getId(),
             "codigo" => $this->getCodigo(),
             "nombre" => $this->getNombre(),
             "codigoColor" => $this->getCodigoColor(),
             "precio" => $this->getPrecio(),
-            "foto" => $this->getFoto(),
+            "marca" => $this->getMarca(),
+            "directorio" => $this->getDirectorio(),
             "categoria" => [
-                "id" => $this->getCategoria()->getId(),
                 "codigo" => $this->getCategoria()->getCodigo(),
                 "nombre" => $this->getCategoria()->getNombre()
             ],
         ];
+    }
+
+    public function getMarca(): ?string
+    {
+        return $this->marca;
+    }
+
+    public function setMarca(?string $marca): self
+    {
+        $this->marca = $marca;
+
+        return $this;
+    }
+
+    public function getDirectorio(): ?string
+    {
+        return $this->directorio;
+    }
+
+    public function setDirectorio(?string $directorio): self
+    {
+        $this->directorio = $directorio;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArchivoAdjunto>
+     */
+    public function getArchivosAdjuntos(): Collection
+    {
+        return $this->archivosAdjuntos;
+    }
+
+    public function addArchivosAdjunto(ArchivoAdjunto $archivosAdjunto): self
+    {
+        if (!$this->archivosAdjuntos->contains($archivosAdjunto)) {
+            $this->archivosAdjuntos[] = $archivosAdjunto;
+            $archivosAdjunto->setProducto($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArchivosAdjunto(ArchivoAdjunto $archivosAdjunto): self
+    {
+        if ($this->archivosAdjuntos->removeElement($archivosAdjunto)) {
+            // set the owning side to null (unless already changed)
+            if ($archivosAdjunto->getProducto() === $this) {
+                $archivosAdjunto->setProducto(null);
+            }
+        }
+
+        return $this;
     }
 }

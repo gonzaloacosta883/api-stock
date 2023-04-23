@@ -78,7 +78,7 @@ class AppFixtures extends Fixture
     {
         $codigo = $this->categorieRepository->getLastCodigo()[1];
         if($codigo == NULL)
-            $codigo = 0;
+            $codigo = 1;
 
         $categories = [
             [

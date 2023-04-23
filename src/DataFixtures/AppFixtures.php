@@ -2,9 +2,13 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Deposito;
 use App\Entity\Producto;
 use App\Entity\Categoria;
+use App\Entity\StockDeposito;
+use App\Repository\DepositoRepository;
 use App\Repository\ProductoRepository;
+use App\Repository\CategoriaRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -12,98 +16,137 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class AppFixtures extends Fixture
 {
     private $productoRepository;
+    private $depositoRepository;
+    private $categoriaRepository;
     private $params;
 
-    public function __construct(ParameterBagInterface $params, ProductoRepository $productoRepository)
+    public function __construct(
+        ParameterBagInterface $params, 
+        ProductoRepository $productoRepository,
+        DepositoRepository $depositoRepository,
+        CategoriaRepository $categorieRepository
+    )
     {
         $this->productoRepository = $productoRepository;
+        $this->depositoRepository = $depositoRepository;
+        $this->categorieRepository = $categorieRepository;
         $this->params = $params;
     }
 
     public function load(ObjectManager $manager): void
     {
+        $this->loadDepositos($manager);
+        $manager->flush();
         $this->loadCategories($manager);
         $manager->flush();
         $this->loadProcessorsAMD($manager);
         $manager->flush();
         $this->loadMothersAMD($manager);
         $manager->flush();
+        $this->loadStocks($manager);
+        $manager->flush();
     }
 
     public function loadDepositos(ObjectManager $manager)
     {
+        $codigo = $this->depositoRepository->getLastCodigo()[1];
+        if($codigo == NULL)
+            $codigo = 0;
         
+        $deposito = new Deposito();
+        $deposito->setNombre("A1");
+        $deposito->setPais("Argentina");
+        $deposito->setProvincia("Entre Rios");
+        $deposito->setCiudad("Parana");
+        $deposito->setCalle("Almafuerte");
+        $deposito->setAltura(3000);
+        $deposito->setCodigo($codigo++);
+        $manager->persist($deposito);
+
+        $deposito2 = new Deposito();
+        $deposito2->setNombre("B1");
+        $deposito2->setPais("Argentina");
+        $deposito2->setProvincia("Entre Rios");
+        $deposito2->setCiudad("Parana");
+        $deposito2->setCalle("Almte. Guillermo Brown");
+        $deposito2->setAltura(1182);
+        $deposito2->setCodigo($codigo++);
+        $manager->persist($deposito2);
     }
 
     private function loadCategories(ObjectManager $manager)
     {
+        $codigo = $this->categorieRepository->getLastCodigo()[1];
+        if($codigo == NULL)
+            $codigo = 0;
+
         $categories = [
             [
-                "codigo" => 1,
+                "codigo" => $codigo++,
                 "nombre" => "Notebooks"
             ],
             [
-                "codigo" => 2,
+                "codigo" => $codigo++,
                 "nombre" => "Procesadores"
             ],
             [
-                "codigo" => 3,
+                "codigo" => $codigo++,
                 "nombre" => "Mothers"
             ],
             [
-                "codigo" => 4,
+                "codigo" => $codigo++,
                 "nombre" => "Placas de Video"
             ],
             [
-                "codigo" => 5,
+                "codigo" => $codigo++,
                 "nombre" => "Memorias RAM"
             ],
             [
-                "codigo" => 6,
+                "codigo" => $codigo++,
                 "nombre" => "Almacenamiento"
             ],
             [
-                "codigo" => 7,
+                "codigo" => $codigo++,
                 "nombre" => "Refrigeracion"
             ],
             [
-                "codigo" => 8,
+                "codigo" => $codigo++,
                 "nombre" => "Gabinetes"
             ],
             [
-                "codigo" => 9,
+                "codigo" => $codigo++,
                 "nombre" => "Fuentes"
             ],
             [
-                "codigo" => 10,
+                "codigo" => $codigo++,
                 "nombre" => "Monitores y Televisores"
             ],
             [
-                "codigo" => 11,
+                "codigo" => $codigo++,
                 "nombre" => "Periféricos"
             ],
             [
-                "codigo" => 12,
+                "codigo" => $codigo++,
                 "nombre" => "Sillas Gamers"
             ],
             [
-                "codigo" => 13,
+                "codigo" => $codigo++,
                 "nombre" => "Conectividad"
             ],
             [
-                "codigo" => 14,
+                "codigo" => $codigo++,
                 "nombre" => "Estabilizadores y UPS"
             ],
             [
-                "codigo" => 15,
+                "codigo" => $codigo++,
                 "nombre" => "Cables y Adaptadores"
             ],
             [
-                "codigo" => 16,
+                "codigo" => $codigo++,
                 "nombre" => "Celulares y Smartwatch"
             ],
             [
-                "codigo" => 17,
+                "codigo" => $codigo++,
                 "nombre" => "Tablets"
             ]
         ];
@@ -296,6 +339,9 @@ class AppFixtures extends Fixture
             ], 
         ];
 
+        $depositoA1 = $this->depositoRepository->findOneBy(["nombre" => "A1"]);
+        $depositoB1 = $this->depositoRepository->findOneBy(["nombre" => "B1"]);
+
         for ($i=0; $i < count($processorsAMD) ; $i++) { 
             
             $nombreFormateado = str_replace('/',"-",$processorsAMD[$i]["nombre"]);
@@ -390,6 +436,22 @@ class AppFixtures extends Fixture
 
             $mother->setDirectorio($path);
             $manager->persist($mother);
+        }
+    }
+
+    public function loadStocks(ObjectManager $manager)
+    {
+        $productos = $this->productoRepository->findAll();
+        $depositos = $this->depositoRepository->findAll();
+
+        foreach ($depositos as $deposito) {
+            foreach ($productos as $producto) {
+                $stock = new StockDeposito();
+                $stock->setProducto($producto);
+                $stock->setDeposito($deposito);
+                $stock->incrementarCantidad(rand(15, 250));
+                $manager->persist($stock);
+            }
         }
     }
 }

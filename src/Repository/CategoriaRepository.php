@@ -19,6 +19,13 @@ class CategoriaRepository extends ServiceEntityRepository
         parent::__construct($registry, Categoria::class);
     }
 
+    public function getLastCodigo()
+    {
+        $query = $this->createQueryBuilder('categoria')
+        ->select('MAX(categoria.codigo)');
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
     // /**
     //  * @return Categoria[] Returns an array of Categoria objects
     //  */

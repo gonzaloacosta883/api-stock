@@ -19,6 +19,13 @@ class DepositoRepository extends ServiceEntityRepository
         parent::__construct($registry, Deposito::class);
     }
 
+    public function getLastCodigo()
+    {
+        $query = $this->createQueryBuilder('deposito')
+        ->select('MAX(deposito.codigo)');
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
     // /**
     //  * @return Deposito[] Returns an array of Deposito objects
     //  */

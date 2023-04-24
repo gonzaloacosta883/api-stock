@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Producto;
-use App\Repository\ProductoRepository;
 use App\Repository\CategoriaRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ProductoRepository;
 use App\Repository\StockDepositoRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/api/1.0/producto")
@@ -21,18 +22,20 @@ class ProductoController extends AbstractController
     private $categoriaRepository;
     private $stockDepositoRepository;
     private $em;
+    private $params;
 
     public function __construct(
         ProductoRepository $productoRepository,
         CategoriaRepository $categoriaRepository,
         StockDepositoRepository $stockDepositoRepository,
-        ManagerRegistry $doctrine
-        ) 
-    {
+        ManagerRegistry $doctrine,
+        ParameterBagInterface $params
+    ) {
         $this->productoRepository = $productoRepository;
         $this->categoriaRepository = $categoriaRepository;
         $this->stockDepositoRepository = $stockDepositoRepository;
         $this->em = $doctrine->getManager();
+        $this->params = $params;
     }
 
     /**
@@ -56,11 +59,24 @@ class ProductoController extends AbstractController
             }
 
             $producto = new Producto();
-            $producto->setNombre(strtoupper(trim($data['nombre'])));
+
+            $nombreFormateado = str_replace('/', "-", $data["nombre"]);
+            $nombreFormateado = str_replace(' ', "-", $nombreFormateado);
+            $nombreFormateado = trim(strtoupper($nombreFormateado));
+
+            $producto->setNombre($nombreFormateado);
             $producto->setCodigoColor(strtoupper(trim($data['codigoColor'])));
             $producto->setPrecio($data['precio']);
             $producto->setCategoria($categoria);
             $producto->setCodigo($data["codigo"]);
+            $producto->setMarca($data["marca"]);
+
+            $path = $this->params->get('archivos_adjuntos_processors_directory') . "/" . $nombreFormateado;
+            if (str_contains(php_uname("s"), "Windows") == true) {
+                $path = str_replace("/", "'\'", $path);
+            }
+            $path = str_replace("'", "", $path);
+            $producto->setDirectorio($path);
 
             $this->em->persist($producto);
             $this->em->flush();
@@ -162,11 +178,45 @@ class ProductoController extends AbstractController
             $categoria = $this->categoriaRepository
                 ->findOneBy(["codigo" => $data["codigoCategoria"]]);
 
-            $producto->setCodigo($data['codigo']);
-            $producto->setNombre($data['nombre']);
-            $producto->setCodigoColor($data['codigoColor']);
+            if ($categoria == null) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => "Categoria Not found",
+                    'data' => 404,
+                ]);
+            }
+
+            $nombreFormateado = str_replace('/', "-", $data["nombre"]);
+            $nombreFormateado = str_replace(' ', "-", $nombreFormateado);
+            $nombreFormateado = trim(strtoupper($nombreFormateado));
+
+            
+            if($data["codigo"] != $producto->getCodigo())
+            {
+                $codigo = $this->productoRepository->findOneBy(["codigo" => $data["codigo"]]);
+                if($codigo != NULL)
+                {
+                    return new JsonResponse([
+                        'success' => false,
+                        'message' => "The code is not available",
+                        'data' => 500,
+                    ]);
+                }
+            }
+            
+            $producto->setCodigo($data["codigo"]);
+            $producto->setNombre($nombreFormateado);
+            $producto->setCodigoColor(strtoupper(trim($data['codigoColor'])));
             $producto->setPrecio($data['precio']);
             $producto->setCategoria($categoria);
+            $producto->setMarca($data["marca"]);
+
+            $path = $this->params->get('archivos_adjuntos_processors_directory') . "/" . $nombreFormateado;
+            if (str_contains(php_uname("s"), "Windows") == true) {
+                $path = str_replace("/", "'\'", $path);
+            }
+            $path = str_replace("'", "", $path);
+            $producto->setDirectorio($path);
 
             $this->em->persist($producto);
             $this->em->flush();

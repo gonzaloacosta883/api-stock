@@ -266,11 +266,12 @@ nelmio_api_doc:
                                 schema:
                                     type: object
                                     properties:
-                                        codigo: {type: integer, example: 3322}
-                                        nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
-                                        codigoColor: {type: string, example: 005BAA}
-                                        precio: {type: float, example: 50}
-                                        codigoCategoria: {type: integer, example: 4554}
+                                        codigo: { type: integer, example: 999 }
+                                        nombre: { type: string, example: Intel Core i7 10700 }
+                                        codigoColor: { type: string, example: "#294CAA" }
+                                        precio: { type: integer, example: 149000 }
+                                        marca: { type: string, example: INTEL }
+                                        codigoCategoria: { type: integer, example: 2 }
                     responses:
                         201:
                             description: Created
@@ -312,11 +313,12 @@ nelmio_api_doc:
                                 schema:
                                     type: object
                                     properties:
-                                        codigo: {type: integer, example: 3322}
-                                        nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
-                                        codigoColor: {type: string, example: 005BAA}
-                                        precio: {type: float, example: 50}
-                                        codigoCategoria: {type: integer, example: 4554}
+                                        codigo: { type: integer, example: 999 }
+                                        nombre: { type: string, example: Intel Core i7 10700 }
+                                        codigoColor: { type: string, example: "#294CAA" }
+                                        precio: { type: integer, example: 200000 }
+                                        marca: { type: string, example: INTEL }
+                                        codigoCategoria: { type: integer, example: 2 }
                     responses:
                         200:
                             description: Edited
@@ -366,17 +368,13 @@ nelmio_api_doc:
                                             data:
                                                 type: object
                                                 properties:
-                                                    id: {type: integer, example: 1}
-                                                    codigo: {type: integer, example: 3255}
-                                                    nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
-                                                    codigoColor: {type: string, example: 005BAA}
-                                                    precio: {type: float, example: 50}
-                                                    categoria: 
-                                                        type: object
-                                                        properties:
-                                                            id: {type: integer, example: 1}
-                                                            nombre: {type: string, example: bebidas}
-                                                            foto: {type: string, example: null}
+                                                    codigo: {type: integer, example: 21}
+                                                    nombre: {type: string, example: ASUS-PRO-A320M-R-WI-FI-CSM-AM4-OEM}
+                                                    codigoColor: {type: string, example: "#FFFFF"}
+                                                    precio: {type: float, example: 29900}
+                                                    marca: {type: string, example: ASUS}
+                                                    directorio: {type: string, example: D:\Codigo\api-stock\public\images\products\motherboards\ASUS-PRO-A320M-R-WI-FI-CSM-AM4-OEM}
+                                                    codigoCategoria: {type: integer, example: 3}
                         500:
                             description: Internal server error
                             content:
@@ -413,17 +411,13 @@ nelmio_api_doc:
                                             data:
                                                 type: object
                                                 properties:
-                                                    id: {type: integer, example: 1}
-                                                    codigo: {type: integer, example: 3255}
-                                                    nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
-                                                    codigoColor: {type: string, example: 005BAA}
-                                                    precio: {type: float, example: 50}
-                                                    categoria: 
-                                                        type: object
-                                                        properties:
-                                                            id: {type: integer, example: 1}
-                                                            nombre: {type: string, example: bebidas}
-                                                            foto: {type: string, example: null}
+                                                    codigo: {type: integer, example: 21}
+                                                    nombre: {type: string, example: ASUS-PRO-A320M-R-WI-FI-CSM-AM4-OEM}
+                                                    codigoColor: {type: string, example: "#FFFFF"}
+                                                    precio: {type: float, example: 29900}
+                                                    marca: {type: string, example: ASUS}
+                                                    directorio: {type: string, example: D:\Codigo\api-stock\public\images\products\motherboards\ASUS-PRO-A320M-R-WI-FI-CSM-AM4-OEM}
+                                                    codigoCategoria: {type: integer, example: 3}
                         404:
                             description: Not Found
                             content:

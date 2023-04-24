@@ -24,7 +24,7 @@ class Producto
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $nombre;
 
@@ -35,13 +35,13 @@ class Producto
 
     /**
      * USD
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=false)
      */
     private $precio;
 
     /**
      * @ORM\ManyToOne(targetEntity=Categoria::class, inversedBy="productos")
-     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=false)
      */
     private $categoria;
 
@@ -51,12 +51,12 @@ class Producto
     private $stocks;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      */
     private $codigo;
 
     /**
-     * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Column(type="string", length=10, nullable=false)
      */
     private $marca;
 
@@ -152,16 +152,17 @@ class Producto
             "codigoColor" => $this->getCodigoColor(),
             "precio" => $this->getPrecio(),
             "marca" => $this->getMarca(),
-            "directorio" => $this->getDirectorio()
+            "directorio" => $this->getDirectorio(),
+            "codigoCategoria" => $this->getCategoria()->getCodigo()
         ];
     }
 
-    public function getMarca(): ?string
+    public function getMarca(): string
     {
         return $this->marca;
     }
 
-    public function setMarca(?string $marca): self
+    public function setMarca(string $marca): self
     {
         $this->marca = $marca;
 

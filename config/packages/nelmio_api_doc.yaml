@@ -23,8 +23,8 @@ nelmio_api_doc:
                                             data:
                                                 type: object
                                                 properties:
-                                                    id: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: Bebidas }
+                                                    codigo: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: Notebooks }
                         500:
                             description: Internal server error
                             content:
@@ -47,7 +47,7 @@ nelmio_api_doc:
                                     type: object
                                     properties:
                                         codigo: {type: integer, example: 4554}
-                                        nombre: {type: string, example: bebidas}
+                                        nombre: {type: string, example: Notebooks}
                     responses:
                         201:
                             description: Created
@@ -89,7 +89,7 @@ nelmio_api_doc:
                                 schema:
                                     type: object
                                     properties:
-                                        codigo: {type: string, example: 4554}
+                                        codigo: {type: integer, example: 4554}
                                         nombre: {type: integer, example: ADAPTADORES-WIFI}
                     responses:
                         200:
@@ -140,9 +140,8 @@ nelmio_api_doc:
                                             data: 
                                                 type: object
                                                 properties:
-                                                    id: { type: integer, example: 1 }
                                                     codigo: { type: integer, example: 2 }
-                                                    nombre: { type: string, example: Bebidas }
+                                                    nombre: { type: string, example: Notebooks }
                         404:
                             description: Not Found
                             content:

@@ -449,8 +449,12 @@ nelmio_api_doc:
                                     type: object
                                     properties:
                                         codigo: {type: integer, example: 4554}
-                                        nombre: {type: string, example: B1}
-                                        direccion: {type: string, example: Calle falsa 123}
+                                        nombre: {type: string, example: A1}
+                                        pais: {type: string, example: Argentina}
+                                        provincia: {type: string, example: Entre Rios}
+                                        ciudad: {type: string, example:  Parana}
+                                        calle: {type: string, example: Almafuerte}
+                                        altura: {type: integer, example: 3000}
                     responses:
                         201:
                             description: Created
@@ -493,8 +497,12 @@ nelmio_api_doc:
                                     type: object
                                     properties:
                                         codigo: {type: integer, example: 4554}
-                                        nombre: {type: string, example: nuevoNombre}
-                                        direccion: {type: string, example: calle falsa 123}
+                                        nombre: {type: string, example: A1}
+                                        pais: {type: string, example: Argentina}
+                                        provincia: {type: string, example: Entre Rios}
+                                        ciudad: {type: string, example:  Parana}
+                                        calle: {type: string, example: Almafuerte}
+                                        altura: {type: integer, example: 3000}
                     responses:
                         200:
                             description: Edited
@@ -545,8 +553,12 @@ nelmio_api_doc:
                                                 type: object
                                                 properties:
                                                     codigo: {type: integer, example: 4554}
-                                                    nombre: {type: string, example: nuevoNombre}
-                                                    direccion: {type: string, example: calle falsa 123}
+                                                    nombre: {type: string, example: A1}
+                                                    pais: {type: string, example: Argentina}
+                                                    provincia: {type: string, example: Entre Rios}
+                                                    ciudad: {type: string, example:  Parana}
+                                                    calle: {type: string, example: Almafuerte}
+                                                    altura: {type: integer, example: 3000}
                         404:
                             description: Not Found
                             content:
@@ -594,8 +606,12 @@ nelmio_api_doc:
                                                 type: object
                                                 properties:
                                                     codigo: {type: integer, example: 4554}
-                                                    nombre: {type: string, example: nuevoNombre}
-                                                    direccion: {type: string, example: calle falsa 123}
+                                                    nombre: {type: string, example: A1}
+                                                    pais: {type: string, example: Argentina}
+                                                    provincia: {type: string, example: Entre Rios}
+                                                    ciudad: {type: string, example:  Parana}
+                                                    calle: {type: string, example: Almafuerte}
+                                                    altura: {type: integer, example: 3000}
             /api/1.0/deposito/{codigo}/productos:
                 get:
                     description: Devuelve la lista de productos existentes en el deposito.
@@ -607,7 +623,7 @@ nelmio_api_doc:
                         required: true
                         schema:
                             type: integer
-                            minimum: 4554
+                            minimum: 1
                         description: Codigo de deposito.
                     responses:
                         200:
@@ -622,24 +638,14 @@ nelmio_api_doc:
                                             deposito:
                                                 type: object
                                                 properties:
-                                                    id: {type: integer, example: 23}
-                                                    codigo: {type: integer, example: 4554}
-                                                    nombre: {type: string, example: nuevoNombre}
-                                                    direccion: {type: string, example: calle falsa 123}
-                                                    productos:
-                                                        type: object
-                                                        properties:
-                                                            id: {type: integer, example: 1}
-                                                            codigo: {type: integer, example: 3255}
-                                                            nombre: {type: string, example: Picadillo de carne Carrefour 90 g}
-                                                            codigoColor: {type: string, example: 005BAA}
-                                                            precio: {type: float, example: 50}
-                                                            categoria: 
-                                                                type: object
-                                                                properties:
-                                                                    id: {type: integer, example: 1}
-                                                                    nombre: {type: string, example: bebidas}
-                                                                    foto: {type: string, example: null}          
+                                                    codigo: {type: integer, example: 1}
+                                                    nombre: {type: string, example: RYZEN-3-3200G}
+                                                    codigoColor: {type: string, example: null}
+                                                    precio: {type: float, example: 66150}
+                                                    marca: {type: string, example: AMD}
+                                                    directorio: {type: string, example: D:\\Codigo\\api-stock\\public\\images\\products\\processors\\RYZEN-3-3200G}
+                                                    codigoCategoria: {type: integer, example: 2}
+                                                    unidades: {type: integer, example: 22}
             /api/1.0/deposito/{codigo}/delete:
                 delete:
                     tags:
@@ -650,7 +656,7 @@ nelmio_api_doc:
                         required: true
                         schema:
                             type: integer
-                            minimum: 4554
+                            minimum: 1
                         description: Codigo del deposito que quiere eliminar
                     responses:
                         200:

@@ -51,7 +51,7 @@ class AppFixtures extends Fixture
     {
         $codigo = $this->depositoRepository->getLastCodigo()[1];
         if($codigo == NULL)
-            $codigo = 0;
+            $codigo = 1;
         
         $deposito = new Deposito();
         $deposito->setNombre("A1");

@@ -103,9 +103,13 @@ class Deposito
     public function __toArray()
     {
         return [
-            "id" => $this->getId(),
             "codigo" => $this->getCodigo(),
-            "nombre" => $this->getNombre()
+            "nombre" => $this->getNombre(),
+            "pais" => $this->getPais(),
+            "provincia" => $this->getProvincia(),
+            "ciudad" => $this->getCiudad(),
+            "calle" => $this->getCalle(),
+            "altura" => $this->getAltura()
         ];
     }
 

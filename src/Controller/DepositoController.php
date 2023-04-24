@@ -41,6 +41,7 @@ class DepositoController extends AbstractController
         try {
             $data = json_decode($request->getContent(), true);
             $deposito = $this->depositoRepository->findOneBy(['codigo' => $data["codigo"]]);
+            
             if ($deposito != null) {
                 return new JsonResponse([
                     'success' => true,
@@ -49,13 +50,14 @@ class DepositoController extends AbstractController
                 ]);
             }
 
-            $nombre = ucfirst(strtolower(trim($data['nombre'])));
-            $direccion = ucfirst(strtolower(trim($data['direccion'])));
-
             $deposito = new Deposito();
             $deposito->setCodigo($data["codigo"]);
-            $deposito->setNombre($nombre);
-            $deposito->setDireccion($direccion);
+            $deposito->setNombre(strtoupper(trim($data['nombre'])));
+            $deposito->setCalle(strtoupper(trim($data['calle'])));
+            $deposito->setAltura($data["altura"]);
+            $deposito->setPais(strtoupper(trim($data["pais"])));
+            $deposito->setProvincia(strtoupper(trim($data["provincia"])));
+            $deposito->setCiudad(strtoupper(trim($data["ciudad"])));
             $this->em->persist($deposito);
             $this->em->flush();
 
@@ -159,19 +161,14 @@ class DepositoController extends AbstractController
             $arrayProductosEnDeposito = [];
             $stocks = $deposito->getStocks();
             foreach ($stocks as $stock) {
-                $arrayProductosEnDeposito[] = [
-                    "producto" => $stock->getProducto()->__toArray(),
-                    "unidades" => $stock->getCantidad(),
-                ];
+                $producto = array_merge($stock->getProducto()->__toArray(), ["unidades" => $stock->getCantidad()]);
+                $arrayProductosEnDeposito[] = $producto;
             }
-
-            $data = ["deposito" => $deposito->__toArray()];
-            $data["deposito"]["productos"] = $arrayProductosEnDeposito;
 
             return new JsonResponse([
                 "success" => true,
                 "message" => "OK",
-                "deposito" => $data,
+                "data" => $arrayProductosEnDeposito,
             ]);
         } catch (\Throwable $th) {
             return new JsonResponse([
@@ -201,9 +198,26 @@ class DepositoController extends AbstractController
                 ]);
             }
 
+            if($data["codigo"] != $deposito->getCodigo())
+            {
+                $codigo = $this->depositoRepository->findOneBy(["codigo" => $data["codigo"]]);
+                if($codigo != NULL)
+                {
+                    return new JsonResponse([
+                        'success' => false,
+                        'message' => "The code is not available",
+                        'data' => 500,
+                    ]);
+                }
+            }
+
             $deposito->setCodigo($data["codigo"]);
             $deposito->setNombre(strtoupper(trim($data['nombre'])));
-            $deposito->setDireccion(strtoupper(trim($data['direccion'])));
+            $deposito->setCalle(strtoupper(trim($data['calle'])));
+            $deposito->setAltura($data["altura"]);
+            $deposito->setPais(strtoupper(trim($data["pais"])));
+            $deposito->setProvincia(strtoupper(trim($data["provincia"])));
+            $deposito->setCiudad(strtoupper(trim($data["ciudad"])));
 
             $this->em->persist($deposito);
             $this->em->flush();

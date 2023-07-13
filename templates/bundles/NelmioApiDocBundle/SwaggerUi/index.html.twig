@@ -14,6 +14,7 @@ file that was distributed with this source code. #}
     <title>{% block title %}{{ swagger_data.spec.info.title }}{% endblock title %}</title>
 
     {% block stylesheets %}
+    <link rel="icon" href="{{ asset('build/icons/box.ico') }}" type="image/x-icon" />
         {{ nelmioAsset(assets_mode, 'swagger-ui/swagger-ui.css') }}
         {{ nelmioAsset(assets_mode, 'style.css') }}
     {% endblock stylesheets %}

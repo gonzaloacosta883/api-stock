@@ -1,5 +1,5 @@
 # API-STOCK <img src="./assets/images/box.svg" height=50 />
- Aplicación web para la gestión de alquileres de películas en un videoclub, aquellos negocios donde uno alquilaba los VHS o DVDs para verlos en sus respectivos reproductores. Previo a la creación y expansión de las plataformas de streaming.
+ Aplicación web para la gestión de alquileres de películas en un api-stock, aquellos negocios donde uno alquilaba los VHS o DVDs para verlos en sus respectivos reproductores. Previo a la creación y expansión de las plataformas de streaming.
 
 ## Software requerido (Windows)
 <a href="https://github.com/symfony-cli/symfony-cli/releases/download/v5.5.6/symfony-cli_windows_amd64.zip"><img src="https://img.shields.io/badge/Symfony-000000?style=for-the-badge&logo=Symfony&logoColor=white"/></a>
@@ -38,7 +38,7 @@ DATABASE_URL=mysql://[user]:[Password]@[Host]:[PuertoMySql]/[NombreBBDD]
 ```
 Ejecutar los siguiente comandos:
 ```bash
-cd videclub
+cd api-stock
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:create
 php bin/console doctrine:fixture:load
@@ -51,5 +51,9 @@ symfony open:local
 symfony server:stop
 ```
 
-#### Documentación Importante
-[hashing-passwords](https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords)
+### Cliente Grafico API
+```bash
+# Credenciales
+# User: admin - Password: admin
+localhost:8000/api/doc
+```

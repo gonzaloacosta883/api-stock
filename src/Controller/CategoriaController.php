@@ -11,11 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use OpenApi\Annotations as OA;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/api/1.0/categoria")
  */
-class CategoriaController extends AbstractController
+class CategoriaController extends BaseApiController
 {
     private $categoriaRepository;
     private $em;
@@ -31,6 +34,7 @@ class CategoriaController extends AbstractController
      */
     public function addCategoria(Request $request): JsonResponse
     {
+        $resultService = [];
         try {
             $data = json_decode($request->getContent(), true);
             $nombreCategoria = strtoupper(trim($data['nombre'])); //Mayuscula sin espacios
@@ -39,11 +43,7 @@ class CategoriaController extends AbstractController
                 ->findOneBy(['codigo' => $data['codigo']]);
 
             if ($duplicado != null) {
-                return new JsonResponse([
-                    'success' => true,
-                    'message' => "Found",
-                    'data' => 302,
-                ]);
+                throw new \Exception('Ya existe una categoria con dicho codigo.', Response::HTTP_CONFLICT);
             }
 
             $categoria = new Categoria();
@@ -52,18 +52,12 @@ class CategoriaController extends AbstractController
             $this->em->persist($categoria);
             $this->em->flush();
 
-            return new JsonResponse([
-                'success' => true,
-                'message' => "Created",
-                'data' => 201,
-            ]);
-        } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+            $resultService = $data;
+        } catch (\Exception $e) {
+            $resultService = $e;
         }
+
+        return $this->responseJSON($resultService, true);
     }
 
     /**
@@ -72,31 +66,23 @@ class CategoriaController extends AbstractController
     public function getCategorias()
     {
 
+        $resultService = [];
         try {
             $categorias = $this->categoriaRepository->findAll();
             $arregloCategorias = [];
 
-            $response = new JsonResponse();
             if (!empty($categorias)) {
 
                 for ($i = 0; $i < count($categorias); $i++) {
                     array_push($arregloCategorias, $categorias[$i]->__toArray());
                 }
             }
-
-            return new JsonResponse([
-                'success' => true,
-                'message' => 'OK',
-                'data' => $arregloCategorias,
-            ]);
-
-        } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+            $resultService = $arregloCategorias;
+        } catch (\Exception $e) {
+            $resultService = $e;
         }
+
+        return $this->responseJSON($resultService, true);
     }
 
     /**
@@ -109,35 +95,27 @@ class CategoriaController extends AbstractController
      */
     public function getCategoriaPorCodigo($codigo)
     {
+
+        $resultService = [];
         try {
             $em = $this->getDoctrine()->getManager();
             $categoria = $this->categoriaRepository
                 ->findOneBy(["codigo" => $codigo]);
 
-            if ($categoria == null) {
-                return new JsonResponse([
-                    'success' => true,
-                    'message' => "Not found",
-                    'data' => 404,
-                ]);
+            if (!$categoria) {
+                throw new NotFoundHttpException('La categoria no se encuentra.');
             }
 
-            return new JsonResponse([
-                'success' => true,
-                'message' => "OK",
-                'data' => [
-                    "id" => $categoria->getId(),
-                    "codigo" => $categoria->getCodigo(),
-                    "nombre" => $categoria->getNombre(),
-                ],
-            ]);
-        } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+            $resultService = [
+                "id" => $categoria->getId(),
+                "codigo" => $categoria->getCodigo(),
+                "nombre" => $categoria->getNombre(),
+            ];
+        } catch (\Exception $e) {
+            $resultService = $e;
         }
+
+        return $this->responseJSON($resultService, true);
     }
 
     /**
@@ -146,43 +124,41 @@ class CategoriaController extends AbstractController
     public function getProductosPorCategoria($codigo): JsonResponse
     {
 
-        $categoria = $this->categoriaRepository->findOneBy(["codigo" => $codigo]);
-        if ($categoria == NULL) {
-            return new JsonResponse([
-                'success' => true,
-                'message' => "Not Found",
-                'data' => 404,
-            ]);
+        $resultService = [];
+        try {
+
+            $categoria = $this->categoriaRepository->findOneBy(["codigo" => $codigo]);
+            if (!$categoria) {
+                throw new NotFoundHttpException('La categoria no se encuentra.');
+            }
+
+            $arregloProductos = [];
+            foreach ($categoria->getProductos() as $producto) {
+                $arregloProductos[] = $producto->__toArray();
+            }
+
+            $resultService = $arregloProductos;
+        } catch (\Exception $e) {
+            $resultService = $e;
         }
 
-        $arregloProductos = [];
-        foreach ($categoria->getProductos() as $producto) {
-            $arregloProductos[] = $producto->__toArray();
-        }
-        
-        return new JsonResponse([
-            'success' => true,
-            'message' => "OK",
-            "data" => $arregloProductos
-        ]);
+        return $this->responseJSON($resultService, true);
     }
 
     /**
      * @Route("/edit", name="categoria_edit", methods="PUT")
      */
-    public function editCategoria($id, Request $request): JsonResponse
+    public function editCategoria(Request $request): JsonResponse
     {
+
+        $resultService = [];
         try {
             $data = json_decode($request->getContent(), true);
             $categoria = $this->categoriaRepository
                 ->findOneBy(["codigo" => $data["codigo"]]);
 
-            if ($categoria == null) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => "Not found",
-                    'data' => 404,
-                ]);
+            if (!$categoria) {
+                throw new NotFoundHttpException('La categoria no se encuentra.');
             }
 
             $nombreCategoria = strtoupper(trim($data['nombre']));
@@ -192,62 +168,42 @@ class CategoriaController extends AbstractController
             $this->em->persist($categoria);
             $this->em->flush();
 
-            return new JsonResponse([
-                'success' => true,
-                'message' => "OK",
-                'data' => 200,
-            ]);
-
-        } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+            $resultService = $data;
+        } catch (\Exception $e) {
+            $resultService = $e;
         }
+
+        return $this->responseJSON($resultService, true);
     }
 
     /**
-     * @Route("/{codigo}/delete", name="categoria_detele", methods="DELETE")
+     * @Route("/{codigo}/delete", name="categoria_delete", methods="DELETE")
      */
     public function deleteCategoria($codigo): JsonResponse
     {
 
+        $resultService = [];
         try {
             $categoria = $this->categoriaRepository
                 ->findOneBy(["codigo" => $codigo]);
 
-            if ($categoria == null) {
-                return new JsonResponse([
-                    'success' => true,
-                    'message' => "Not found",
-                    'data' => 404,
-                ]);
+            if (!$categoria) {
+                throw new NotFoundHttpException('La categoria no se encuentra.');
             }
 
             if (count($categoria->getProductos()) > 0) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => "Existen productos asociados a la categoria",
-                    'data' => 423,
-                ]);
+                throw new AccessDeniedException('Existen productos asociados a la categoría, no se puede eliminar.');
             }
 
             $this->em->remove($categoria);
             $this->em->flush();
 
-            return new JsonResponse([
-                'success' => true,
-                'message' => "Deleted",
-                'data' => 200,
-            ]);
+            $resultService = ['title' => 'Recurso no eliminado'];
 
-        } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+        } catch (\Exception $e) {
+            $resultService = $e;
         }
+
+        return $this->responseJSON($resultService, true);
     }
 }

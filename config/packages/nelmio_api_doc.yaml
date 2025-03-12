@@ -4,6 +4,25 @@ nelmio_api_doc:
             title: API-STOCK
             description: Api Rest Full para gestionar el stock de productos en sus respectivos almacenes.
             version: 1.0.0
+        components:
+            schemas:
+                Error500:
+                    type: object
+                    properties:
+                        errors:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    status: 
+                                        type: integer
+                                        example: 500
+                                    title: 
+                                        type: string
+                                        example: Internal server error
+                                    detail: 
+                                        type: string
+                                        example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....
         paths:
             /api/1.0/categoria/all:
                 get:
@@ -18,8 +37,6 @@ nelmio_api_doc:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: OK }
                                             data:
                                                 type: object
                                                 properties:
@@ -28,13 +45,10 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
+
             /api/1.0/categoria/add:
                 post:
                     description: Crea una categoria inexistente.
@@ -46,19 +60,21 @@ nelmio_api_doc:
                                 schema:
                                     type: object
                                     properties:
-                                        codigo: {type: integer, example: 4554}
-                                        nombre: {type: string, example: Notebooks}
+                                        codigo: { type: integer, example: 1 }
+                                        nombre: { type: string, example: Notebooks }
                     responses:
-                        201:
+                        200:
                             description: Created
                             content:
                                 aplication/json:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: Created }
-                                            data: { type: integer, example: 201 }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    codigo: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: Notebooks }
                         302:
                             description: Found
                             content:
@@ -66,19 +82,26 @@ nelmio_api_doc:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: Found }
-                                            data: { type: integer, example: 302 }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    codigo: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: Notebooks }
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 500}
+                                                        title: { type: string, example: Internal server error}
+                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3I...}
             /api/1.0/categoria/edit:
                 put:
                     tags:
@@ -99,29 +122,42 @@ nelmio_api_doc:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: Edited }
-                                            data: { type: integer, example: 200 }
+                                            data:
+                                                type: object
+                                                properties:
+                                                    codigo: { type: integer, example: 1 }
+                                                    nombre: { type: string, example: Notebooks }
                         404:
                             description: Not Found
                             content:
-                                aplication/json:
-                                        schema:
-                                            type: object
-                                            properties:
-                                                success: { type: boolean, example: true }
-                                                message: { type: string, example: Not Found }
-                                                data: { type: integer, example: 404 }
-                        500:
-                            description: Internal server error
-                            content:
-                                aplication/json:
+                                application/json:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 404 }
+                                                        title: { type: string, example: Recurso no encontrado}
+                                                        detail: { type: string, example: La categoria no se encuentra.}
+
+                        500:
+                            description: Internal server error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 500 }
+                                                        title: { type: string, example: Internal server error}
+                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
                         
             /api/1.0/categoria/{codigo}:
                 get:
@@ -145,23 +181,34 @@ nelmio_api_doc:
                         404:
                             description: Not Found
                             content:
-                                aplication/json:
-                                        schema:
-                                            type: object
-                                            properties:
-                                                success: { type: boolean, example: true }
-                                                message: { type: string, example: Not Found }
-                                                data: { type: integer, example: 404 }
-                        500:
-                            description: Internal server error
-                            content:
-                                aplication/json:
+                                application/json:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 404 }
+                                                        title: { type: string, example: Recurso no encontrado}
+                                                        detail: { type: string, example: La categoria no se encuentra.}
+                        500:
+                            description: Internal server error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 500 }
+                                                        title: { type: string, example: Internal server error}
+                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
+
                     parameters:
                       - in: path
                         name: codigo
@@ -182,29 +229,41 @@ nelmio_api_doc:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: Deleted }
-                                            data: { type: integer, example: 200 }
+                                            data: 
+                                                type: object
+                                                properties:
+                                                    codigo: { type: integer, example: 2 }
+                                                    nombre: { type: string, example: Notebooks }
                         404:
                             description: Not Found
                             content:
-                                aplication/json:
-                                        schema:
-                                            type: object
-                                            properties:
-                                                success: { type: boolean, example: true }
-                                                message: { type: string, example: Not Found }
-                                                data: { type: integer, example: 404 }
-                        500:
-                            description: Internal server error
-                            content:
-                                aplication/json:
+                                application/json:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 404 }
+                                                        title: { type: string, example: Recurso no encontrado}
+                                                        detail: { type: string, example: La categoria no se encuentra.}
+                        500:
+                            description: Internal server error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 500 }
+                                                        title: { type: string, example: Internal server error}
+                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
                     parameters:
                       - in: path
                         name: codigo
@@ -217,6 +276,14 @@ nelmio_api_doc:
                 get:
                     tags:
                         - Categorias
+                    parameters:
+                      - in: path
+                        name: codigo
+                        required: true
+                        schema:
+                            type: integer
+                            minimum: 1
+                        description: Codigo de la categoria de la cual se quieren obtener los productos
                     responses:
                         200:
                             description: OK
@@ -225,9 +292,7 @@ nelmio_api_doc:
                                     schema:
                                         type: object
                                         properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: OK }
-                                            data:
+                                            data: 
                                                 type: object
                                                 properties:
                                                     codigo: { type: integer, example: 1 }
@@ -239,21 +304,34 @@ nelmio_api_doc:
                         404:
                             description: Not Found
                             content:
-                                aplication/json:
-                                        schema:
-                                            type: object
-                                            properties:
-                                                success: { type: boolean, example: false }
-                                                message: { type: string, example: Not Found }
-                                                data: { type: integer, example: 404 }
-                    parameters:
-                      - in: path
-                        name: codigo
-                        required: true
-                        schema:
-                            type: integer
-                            minimum: 1
-                        description: Codigo de la categoria de la cual se quieren obtener los productos
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 404 }
+                                                        title: { type: string, example: Recurso no encontrado}
+                                                        detail: { type: string, example: La categoria no se encuentra.}
+                        500:
+                            description: Internal server error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            errors:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        status: { type: integer, example: 500 }
+                                                        title: { type: string, example: Internal server error}
+                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
+
             /api/1.0/producto/add:
                 post:
                     description: Crea un producto y lo asocia a una categoria

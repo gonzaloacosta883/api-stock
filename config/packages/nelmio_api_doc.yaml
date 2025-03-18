@@ -6,6 +6,12 @@ nelmio_api_doc:
             version: 1.0.0
         components:
             schemas:
+
+                RecursoEliminado:
+                    type: object
+                    properties:
+                        title: {type: string, example: "Recurso no eliminado"}
+
                 Error500:
                     type: object
                     properties:
@@ -23,6 +29,59 @@ nelmio_api_doc:
                                     detail: 
                                         type: string
                                         example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....
+                
+                Error404:
+                    type: object
+                    properties:
+                        errors:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    status: { type: integer, example: 404 }
+                                    title: { type: string, example: Recurso no encontrado}
+                                    detail: { type: string, example: La categoria no se encuentra.}
+
+                Error400:
+                    type: object
+                    properties:
+                        codigo: {type: integer, example: 4554}
+                        nombre: {type: integer, example: ADAPTADORES-WIFI}
+
+                Categoria:item:
+                    type: object
+                    properties:
+                        codigo: { type: integer, example: 1 }
+                        nombre: { type: string, example: Notebooks }
+
+                Categoria:list:item:
+                    type: object
+                    properties:
+                        data:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/Categoria:item'
+
+                Producto:item:
+                    type: object
+                    properties:
+                        codigo: {type: integer, example: 1}
+                        nombre: {type: string, example: RYZEN-3-3200G}
+                        codigoColor: {type: string, example: null}
+                        precio: {type: float, example: 66150}
+                        marca: {type: string, example: AMD}
+                        directorio: {type: string, example: D:\\Codigo\\api-stock\\public\\images\\products\\processors\\RYZEN-3-3200G}
+                        codigoCategoria: {type: integer, example: 2}
+                        unidades: {type: integer, example: 22}
+                
+                Producto:list:item:
+                    type: object
+                    properties:
+                        data:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/Producto:item'
+
         paths:
             /api/1.0/categoria/all:
                 get:
@@ -35,13 +94,8 @@ nelmio_api_doc:
                             content:
                                 aplication/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            data:
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: Notebooks }
+                                        $ref: '#/components/schemas/Categoria:list:item'
+                                                
                         500:
                             description: Internal server error
                             content:
@@ -71,10 +125,7 @@ nelmio_api_doc:
                                         type: object
                                         properties:
                                             data:
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: Notebooks }
+                                                $ref: '#/components/schemas/Categoria:item'
                         302:
                             description: Found
                             content:
@@ -83,25 +134,13 @@ nelmio_api_doc:
                                         type: object
                                         properties:
                                             data:
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: Notebooks }
+                                                $ref: '#/components/schemas/Categoria:item'
                         500:
                             description: Internal server error
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 500}
-                                                        title: { type: string, example: Internal server error}
-                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3I...}
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/categoria/edit:
                 put:
                     tags:
@@ -110,10 +149,7 @@ nelmio_api_doc:
                         content:
                             aplication/json:
                                 schema:
-                                    type: object
-                                    properties:
-                                        codigo: {type: integer, example: 4554}
-                                        nombre: {type: integer, example: ADAPTADORES-WIFI}
+                                    
                     responses:
                         200:
                             description: Edited
@@ -123,41 +159,20 @@ nelmio_api_doc:
                                         type: object
                                         properties:
                                             data:
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: Notebooks }
+                                                $ref: '#/components/schemas/Categoria:item'
                         404:
                             description: Not Found
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 404 }
-                                                        title: { type: string, example: Recurso no encontrado}
-                                                        detail: { type: string, example: La categoria no se encuentra.}
+                                        $ref: '#/components/schemas/Error400'
 
                         500:
                             description: Internal server error
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 500 }
-                                                        title: { type: string, example: Internal server error}
-                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
+                                        $ref: '#/components/schemas/Error500'
                         
             /api/1.0/categoria/{codigo}:
                 get:
@@ -173,41 +188,20 @@ nelmio_api_doc:
                                         properties:
                                             success: { type: boolean, example: true }
                                             message: { type: string, example: OK }
-                                            data: 
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 2 }
-                                                    nombre: { type: string, example: Notebooks }
+                                            data:
+                                                $ref: '#/components/schemas/Categoria:item'
                         404:
                             description: Not Found
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 404 }
-                                                        title: { type: string, example: Recurso no encontrado}
-                                                        detail: { type: string, example: La categoria no se encuentra.}
+                                        $ref: '#/components/schemas/Error400'
                         500:
                             description: Internal server error
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 500 }
-                                                        title: { type: string, example: Internal server error}
-                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
+                                        $ref: '#/components/schemas/Error500'
 
                     parameters:
                       - in: path
@@ -229,11 +223,8 @@ nelmio_api_doc:
                                     schema:
                                         type: object
                                         properties:
-                                            data: 
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 2 }
-                                                    nombre: { type: string, example: Notebooks }
+                                            data:
+                                                $ref: '#/components/schemas/RecursoEliminado'
                         404:
                             description: Not Found
                             content:
@@ -254,16 +245,7 @@ nelmio_api_doc:
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 500 }
-                                                        title: { type: string, example: Internal server error}
-                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
+                                        $ref: '#/components/schemas/Error500'
                     parameters:
                       - in: path
                         name: codigo
@@ -290,47 +272,19 @@ nelmio_api_doc:
                             content:
                                 aplication/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            data: 
-                                                type: object
-                                                properties:
-                                                    codigo: { type: integer, example: 1 }
-                                                    nombre: { type: string, example: RYZEN-3-3200G }
-                                                    codigoColor: { type: string, example: "#FFFF" }
-                                                    precio: { type: integer, example: 66150 }
-                                                    marca: { type: string, example: AMD }
-                                                    directorio: { type: string, example: directorio }
+                                        $ref: '#/components/schemas/Producto:list:item'
                         404:
                             description: Not Found
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 404 }
-                                                        title: { type: string, example: Recurso no encontrado}
-                                                        detail: { type: string, example: La categoria no se encuentra.}
+                                        $ref: '#/components/schemas/Error404'
                         500:
                             description: Internal server error
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            errors:
-                                                type: array
-                                                items:
-                                                    type: object
-                                                    properties:
-                                                        status: { type: integer, example: 500 }
-                                                        title: { type: string, example: Internal server error}
-                                                        detail: { type: string, example: IzAgL3Zhci93d3cvaHRtbC92ZW5kb3Ivc3ltZm9ueS9odHRwLWtlcm5....}
+                                        $ref: '#/components/schemas/Error500'
 
             /api/1.0/producto/add:
                 post:
@@ -373,13 +327,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/producto/edit:
                 put:
                     tags:
@@ -420,13 +370,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/producto/all:
                 get:
                     description: Devuelve la lista de productos
@@ -455,13 +401,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/producto/{codigo}:
                 get:
                     tags:
@@ -508,13 +450,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/deposito/add:
                 post:
                     description: Crea un deposito inexistente.
@@ -557,13 +495,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/deposito/edit:
                 put:
                     tags:
@@ -572,15 +506,7 @@ nelmio_api_doc:
                         content:
                             aplication/json:
                                 schema:
-                                    type: object
-                                    properties:
-                                        codigo: {type: integer, example: 4554}
-                                        nombre: {type: string, example: A1}
-                                        pais: {type: string, example: Argentina}
-                                        provincia: {type: string, example: Entre Rios}
-                                        ciudad: {type: string, example:  Parana}
-                                        calle: {type: string, example: Almafuerte}
-                                        altura: {type: integer, example: 3000}
+                                    $ref: '#/components/schemas/Categoria:item'
                     responses:
                         200:
                             description: Edited
@@ -605,13 +531,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/deposito/all:
                 get:
                     description: Devuelve la lista de depositos existentes.
@@ -650,13 +572,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/deposito/{codigo}:
                 get:
                     tags:
@@ -709,21 +627,7 @@ nelmio_api_doc:
                             content:
                                 aplication/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: true }
-                                            message: { type: string, example: OK }
-                                            deposito:
-                                                type: object
-                                                properties:
-                                                    codigo: {type: integer, example: 1}
-                                                    nombre: {type: string, example: RYZEN-3-3200G}
-                                                    codigoColor: {type: string, example: null}
-                                                    precio: {type: float, example: 66150}
-                                                    marca: {type: string, example: AMD}
-                                                    directorio: {type: string, example: D:\\Codigo\\api-stock\\public\\images\\products\\processors\\RYZEN-3-3200G}
-                                                    codigoCategoria: {type: integer, example: 2}
-                                                    unidades: {type: integer, example: 22}
+                                        
             /api/1.0/deposito/{codigo}/delete:
                 delete:
                     tags:
@@ -760,13 +664,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
                                     
             /api/1.0/stock/deposito/incrementar:
                 post:
@@ -806,13 +706,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }
+                                        $ref: '#/components/schemas/Error500'
             /api/1.0/stock/deposito/decrementar:
                 put:
                     description: Decrementa la cantida de unidades disponibles de un producto en un deposito.
@@ -851,13 +747,9 @@ nelmio_api_doc:
                         500:
                             description: Internal server error
                             content:
-                                aplication/json:
+                                application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success: { type: boolean, example: false }
-                                            message: { type: string, example: Internal server error }
-                                            data: { type: integer, example: 500 }  
+                                        $ref: '#/components/schemas/Error500'  
         tags:
             - name: Categorias
               description: Categorias a las cuales puede pertenecer un producto.

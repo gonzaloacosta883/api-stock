@@ -11,18 +11,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/api/1.0/producto")
  */
-class ProductoController extends AbstractController
+class ProductoController extends BaseApiController
 {
     private $productoRepository;
     private $categoriaRepository;
     private $stockDepositoRepository;
     private $em;
     private $params;
+    private $resultService = [];
 
     public function __construct(
         ProductoRepository $productoRepository,
@@ -51,11 +55,8 @@ class ProductoController extends AbstractController
 
             $producto = $this->productoRepository->findOneBy(['codigo' => $data["codigo"]]);
             if ($producto != null) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => "Found",
-                    'data' => 302,
-                ]);
+                // throw new \Exception('Ya un producto con dicho codigo.', Response::HTTP_CONFLICT);
+                throw new ConflictHttpException('Ya un producto con dicho codigo.');
             }
 
             $producto = new Producto();
@@ -81,18 +82,13 @@ class ProductoController extends AbstractController
             $this->em->persist($producto);
             $this->em->flush();
 
-            return new JsonResponse([
-                'success' => true,
-                'message' => "Created",
-                'data' => 201,
-            ]);
+            $this->resultService = $producto;
+
         } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+            $this->resultService = $th;
         }
+
+        return $this->responseJSON($this->resultService, true);
     }
 
     /**
@@ -168,22 +164,14 @@ class ProductoController extends AbstractController
             $producto = $this->productoRepository->findOneBy(["codigo" => $data["codigo"]]);
 
             if ($producto == null) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => "Not found",
-                    'data' => 404,
-                ]);
+                throw new NotFoundHttpException('El producto no se encuentra.');
             }
 
             $categoria = $this->categoriaRepository
                 ->findOneBy(["codigo" => $data["codigoCategoria"]]);
 
             if ($categoria == null) {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => "Categoria Not found",
-                    'data' => 404,
-                ]);
+                throw new NotFoundHttpException('La categoria no se encuentra.');
             }
 
             $nombreFormateado = str_replace('/', "-", $data["nombre"]);
@@ -195,13 +183,8 @@ class ProductoController extends AbstractController
             {
                 $codigo = $this->productoRepository->findOneBy(["codigo" => $data["codigo"]]);
                 if($codigo != NULL)
-                {
-                    return new JsonResponse([
-                        'success' => false,
-                        'message' => "The code is not available",
-                        'data' => 500,
-                    ]);
-                }
+                    throw new \Exception("El codigo ingresado no esta disponible.");
+
             }
             
             $producto->setCodigo($data["codigo"]);
@@ -221,17 +204,12 @@ class ProductoController extends AbstractController
             $this->em->persist($producto);
             $this->em->flush();
 
-            return new JsonResponse([
-                'success' => true,
-                'message' => "Edited",
-                'data' => 200,
-            ]);
-        } catch (\Throwable $th) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => $th->getMessage(),
-                'data' => 500,
-            ]);
+            $this->resultService = $producto;
+
+        } catch (\Exception $e) {
+            $this->resultService = $e;
         }
+
+        return $this->responseJSON($this->resultService, true);
     }
 }

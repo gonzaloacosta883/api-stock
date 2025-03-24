@@ -1,0 +1,221 @@
+nelmio_api_doc:
+  documentation:
+    components:
+      schemas:
+        Categoria:item:
+          type: object
+          properties:
+            codigo: { type: integer, example: 1 }
+            nombre: { type: string, example: "Notebooks" }
+        
+        Categoria:list:item:
+          type: object
+          properties:
+            success: { type: boolean, example: true }
+            message: { type: string, example: "OK" }
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/Categoria:item"
+    
+    paths:
+      /api/1.0/categoria/all:
+        get:
+          description: Devuelve todas las categorías de productos.
+          tags:
+            - Categorias
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Categoria:list:item"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+
+      /api/1.0/categoria/add:
+        post:
+          description: Crea una categoría inexistente.
+          tags:
+            - Categorias
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Categoria:item"
+          responses:
+            200:
+              description: Created
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Categoria:item"
+            302:
+              description: Found
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Categoria:item"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+      
+      /api/1.0/categoria/edit:
+        put:
+          tags:
+            - Categorias
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Categoria:item"
+          responses:
+            200:
+              description: Edited
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Categoria:item"
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error404"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+
+      /api/1.0/categoria/{codigo}:
+        get:
+          tags:
+            - Categorias
+          description: Devuelve la categoría cuyo código sea el recibido por parámetro.
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Código de la categoría a solicitar
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      success: { type: boolean, example: true }
+                      message: { type: string, example: "OK" }
+                      data:
+                        $ref: "#/components/schemas/Categoria:item"
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error404"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+      
+      /api/1.0/categoria/{codigo}/delete:
+        delete:
+          tags:
+            - Categorias
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Código de la categoría que quiere eliminar
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/RecursoEliminado"
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      errors:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            status: { type: integer, example: 404 }
+                            title: { type: string, example: "Recurso no encontrado" }
+                            detail: { type: string, example: "La categoría no se encuentra." }
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+      
+      /api/1.0/categoria/{codigo}/productos:
+        get:
+          tags:
+            - Categorias
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Código de la categoría de la cual se quieren obtener los productos
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Producto:list:item"
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error404"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"

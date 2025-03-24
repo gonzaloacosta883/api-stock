@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -24,6 +25,7 @@ class BaseApiController extends AbstractController
     {
         $response = [];
         $httpStatusCode = Response::HTTP_OK;
+
         if ($result instanceof AccessDeniedException) {
             // Manejar específicamente la excepción de acceso denegado
             $httpStatusCode = Response::HTTP_FORBIDDEN; // 403
@@ -41,7 +43,16 @@ class BaseApiController extends AbstractController
                 'title' => 'Recurso no encontrado',
                 'detail' => $result->getMessage(),
             ];
+        } elseif ($result instanceof ConflictHttpException) {
+            // Manejar la excepción cuando el recurso ya existe
+            $httpStatusCode = Response::HTTP_CONFLICT; // 409
+            $response['errors'][] = [
+                'status' => $httpStatusCode,
+                'title' => 'Conflicto de recurso',
+                'detail' => $result->getMessage(),
+            ];
         } elseif ($result instanceof \Exception) {
+            // Manejar la excepción cuando hay un error interno en el servidor
             $httpStatusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             $response['errors'][] = [
                 'status' => $httpStatusCode,
@@ -49,11 +60,14 @@ class BaseApiController extends AbstractController
                 'detail' => $encodeDetail ? base64_encode($result->getTraceAsString()) : $result->getTraceAsString(),
             ];
         } else {
+            // $response['status'] = $httpStatusCode;
+            // $response['title'] = "OK";
             $response['data'] = $result;
         }
 
         return new JsonResponse($response, $httpStatusCode);
     }
+
 
     /**
      * @throws InvalidParameters

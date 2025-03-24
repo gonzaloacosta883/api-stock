@@ -1,0 +1,156 @@
+nelmio_api_doc:
+  documentation:
+    components:
+      schemas:
+        Producto:item:
+          type: object
+          properties:
+            codigo: { type: integer, example: 1 }
+            nombre: { type: string, example: "RYZEN-3-3200G" }
+            codigoColor: { type: string, example: null }
+            precio: { type: number, format: float, example: 66150 }
+            marca: { type: string, example: "AMD" }
+            directorio: { type: string, example: "D:\\Codigo\\api-stock\\public\\images\\products\\processors\\RYZEN-3-3200G" }
+            codigoCategoria: { type: integer, example: 2 }
+            unidades: { type: integer, example: 22 }
+
+        Producto:list:item:
+          type: object
+          properties:
+            success: { type: boolean, example: true }
+            message: { type: string, example: "OK" }
+            data:
+              type: array
+              items:
+                $ref: "#/components/schemas/Producto:item"
+
+    paths:
+      /api/1.0/producto/add:
+        post:
+          description: Crea un producto y lo asocia a una categoría
+          tags:
+            - Productos
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Producto:item"
+          responses:
+            200:
+              description: Created
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Producto:item"
+            302:
+              description: Found
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error409"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+
+      /api/1.0/producto/edit:
+        put:
+          tags:
+            - Productos
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Producto:item"
+          responses:
+            200:
+              description: Edited
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Producto:item"
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error404"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+
+      /api/1.0/producto/all:
+        get:
+          description: Devuelve la lista de productos
+          tags:
+            - Productos
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Producto:list:item"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"
+
+      /api/1.0/producto/{codigo}:
+        get:
+          tags:
+            - Productos
+          description: Devuelve el producto cuyo código sea el recibido por parámetro.
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Código del producto que se quiere obtener
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      success: { type: boolean, example: true }
+                      message: { type: string, example: "OK" }
+                      data:
+                        type: object
+                        properties:
+                          codigo: { type: integer, example: 21 }
+                          nombre: { type: string, example: "ASUS-PRO-A320M-R-WI-FI-CSM-AM4-OEM" }
+                          codigoColor: { type: string, example: "#FFFFF" }
+                          precio: { type: number, format: float, example: 29900 }
+                          marca: { type: string, example: "ASUS" }
+                          directorio: { type: string, example: "D:\\Codigo\\api-stock\\public\\images\\products\\motherboards\\ASUS-PRO-A320M-R-WI-FI-CSM-AM4-OEM" }
+                          codigoCategoria: { type: integer, example: 3 }
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error404"
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: "#/components/schemas/Error500"

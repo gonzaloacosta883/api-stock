@@ -1,0 +1,189 @@
+nelmio_api_doc:
+  documentation:
+    components:
+      schemas:
+        Deposito:item:
+          type: object
+          properties:
+            codigo: { type: integer, example: 4554 }
+            nombre: { type: string, example: A1 }
+            pais: { type: string, example: Argentina }
+            provincia: { type: string, example: Entre Rios }
+            ciudad: { type: string, example: Parana }
+            calle: { type: string, example: Almafuerte }
+            altura: { type: integer, example: 3000 }
+
+        Deposito:list:item:
+          type: object
+          properties:
+            success: { type: boolean, example: true }
+            message: { type: string, example: OK }
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Deposito:item'
+
+    paths:
+      /api/1.0/deposito/add:
+        post:
+          description: Crea un deposito inexistente.
+          tags:
+            - Depositos
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Deposito:item'
+          responses:
+            201:
+              description: Created
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Deposito:item'
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error500'
+
+      /api/1.0/deposito/edit:
+        put:
+          tags:
+            - Depositos
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Deposito:item'
+          responses:
+            200:
+              description: Edited
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Deposito:item'
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error404'
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error500'
+
+      /api/1.0/deposito/all:
+        get:
+          description: Devuelve la lista de depositos existentes.
+          tags:
+            - Depositos
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Deposito:list:item'
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error500'
+
+      /api/1.0/deposito/{codigo}:
+        get:
+          tags:
+            - Depositos
+          description: Devuelve el deposito con el codigo ingresado.
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Codigo del deposito que se quiere obtener.
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Deposito:item'
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error404'
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error500'
+
+      /api/1.0/deposito/{codigo}/productos:
+        get:
+          description: Devuelve la lista de productos existentes en el deposito.
+          tags:
+            - Depositos
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Codigo del deposito.
+          responses:
+            200:
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Producto:list:item'
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error500'
+
+      /api/1.0/deposito/{codigo}/delete:
+        delete:
+          tags:
+            - Depositos
+          parameters:
+            - in: path
+              name: codigo
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+              description: Codigo del deposito que quiere eliminar.
+          responses:
+            200:
+              description: Deleted
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RecursoEliminado'
+            404:
+              description: Not Found
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error404'
+            500:
+              description: Internal server error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error500'
